@@ -1,7 +1,23 @@
 const colors = {
   white: '#fff',
   dark: '#474747',
-  secondary: ['#F2F2F2', '#CBCBCB', '#8B8B8B'],
+  gray: ['#F2F2F2', '#CBCBCB', '#8B8B8B'],
 };
 
-export {colors};
+const lightTheme = {
+  background: colors.white,
+  text: colors.dark,
+  secondary: colors.gray,
+};
+
+const darkTheme = {
+  background: colors.dark,
+  text: colors.white,
+  secondary: colors.gray,
+};
+
+type Theme = typeof lightTheme;
+
+export {darkTheme, lightTheme};
+export type {Theme};
+export default colors;
