@@ -1,26 +1,32 @@
 import React from 'react';
-import {Pressable} from 'react-native';
 import styled from 'styled-components/native';
-import ShareSvg from '../../../assets/svgs/share.svg';
-import useIsOpen from '../../../hooks/useIsOpen';
-import {Dialog} from '../../shared/Dialog';
+import {Spacing} from '../../shared/Spacing';
 
 export default function FirstMain() {
-  const {isOpen, toggle} = useIsOpen();
-
   return (
     <StyledSafeAreaView>
-      <StyledText>FirstMain</StyledText>
-      <Pressable
-        onPress={() => {
-          toggle();
-        }}>
-        <ShareSvg fill="black" />
-        <StyledText> 테마 바꾸기</StyledText>
-      </Pressable>
-      <Dialog isOpen={isOpen} onClose={toggle}>
-        <StyledText>기록을 삭제하시겠습니까?</StyledText>
-      </Dialog>
+      <StyledImage
+        source={require('../../../assets/images/first-circles.png')}
+      />
+      <Wrapper>
+        <Title>
+          원하는 모습,{'\n'}
+          목표 이루기!
+        </Title>
+        <Spacing size={10} />
+        <SubTitle>
+          <Bold>베리굿</Bold>은{'\n'}
+          여러분의 마음 속에만 있는 목표에{'\n'}
+          가까워질 수 있도록{'\n'}
+          함께 합니다
+        </SubTitle>
+        <Spacing size={100} />
+      </Wrapper>
+      <Center>
+        <StartButton>
+          <StartText>시작하기</StartText>
+        </StartButton>
+      </Center>
     </StyledSafeAreaView>
   );
 }
@@ -30,6 +36,46 @@ const StyledSafeAreaView = styled.SafeAreaView`
   flex: 1;
 `;
 
-const StyledText = styled.Text`
+const Wrapper = styled.View`
+  padding: 80px 20px 0 20px;
+`;
+
+const Title = styled.Text`
   color: ${({theme}) => theme.text};
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 35px;
+`;
+
+const Bold = styled.Text`
+  font-weight: bold;
+`;
+
+const SubTitle = styled.Text`
+  font-size: 16px;
+  color: ${({theme}) => theme.secondary[2]};
+  font-weight: 400;
+  line-height: 20px;
+`;
+
+const StyledImage = styled.Image`
+  position: absolute;
+`;
+
+const Center = styled.View`
+  position: absolute;
+  bottom: 100px;
+  left: 30%;
+`;
+
+const StartButton = styled.Pressable`
+  background-color: ${({theme}) => theme.text};
+  border-radius: 30px;
+`;
+
+const StartText = styled.Text`
+  font-weight: bold;
+  color: ${({theme}) => theme.background};
+  font-size: 16px;
+  padding: 15px 40px;
 `;
