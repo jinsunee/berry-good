@@ -1,4 +1,4 @@
-package com.berrygood;
+package com.blueberryworks.berrygood;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
