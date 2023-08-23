@@ -67,3 +67,4 @@ yarn-error.log
 .env
 GoogleService-Info.plist
 google-services.json
+firebaseConfig.ts
