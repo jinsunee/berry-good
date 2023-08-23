@@ -2,6 +2,7 @@ import React from 'react';
 import {Pressable} from 'react-native';
 import {useRecoilState} from 'recoil';
 import styled from 'styled-components/native';
+import ShareSvg from '../../../assets/svgs/share.svg';
 import themeAtom from '../../../states/theme';
 
 export default function FirstMain() {
@@ -17,7 +18,8 @@ export default function FirstMain() {
             setTheme('dark');
           }
         }}>
-        <StyledText>테마 바꾸기</StyledText>
+        <ShareSvg fill="black" />
+        <StyledText> 테마 바꾸기</StyledText>
       </Pressable>
     </StyledSafeAreaView>
   );
