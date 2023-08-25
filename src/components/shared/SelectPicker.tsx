@@ -1,5 +1,5 @@
 import {Picker} from '@react-native-picker/picker';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import styled from 'styled-components/native';
 import useBoolean from '../../hooks/useBoolean';
 import BottomSheet from './BottomSheet';
@@ -23,8 +23,8 @@ export function SelectPicker<T>({
   items,
 }: Props<T>) {
   const [isOpen, toggle] = useBoolean();
-  const [displayedItem, setDisplayedItem] = useState<Item<T>>();
-  const [selectedItem, setSelectedItem] = useState<Item<T>>();
+  const [displayedItem, setDisplayedItem] = useState<Item<T> | undefined>();
+  const [selectedItem, setSelectedItem] = useState<Item<T> | undefined>();
 
   const isHaveValue = !!displayedItem;
 
@@ -35,15 +35,17 @@ export function SelectPicker<T>({
     toggle();
   }, [onConfirm, selectedItem, toggle]);
 
+  const pickerItems = useMemo(() => {
+    return items.map(item => (
+      <Picker.Item key={item.label} label={item.label} value={item} />
+    ));
+  }, [items]);
+
   useEffect(() => {
     const _item = items.find(item => item.value === value);
     setSelectedItem(_item);
     setDisplayedItem(_item);
   }, [items, value]);
-
-  useEffect(() => {
-    console.log('selectedItem', selectedItem);
-  }, [selectedItem]);
 
   return (
     <>
@@ -69,10 +71,10 @@ export function SelectPicker<T>({
         }>
         <Picker
           selectedValue={selectedItem}
-          onValueChange={itemValue => setSelectedItem(itemValue)}>
-          {items.map((item, index) => (
-            <Picker.Item key={index} label={item.label} value={item} />
-          ))}
+          onValueChange={itemValue => {
+            setSelectedItem(itemValue);
+          }}>
+          {pickerItems}
         </Picker>
       </BottomSheet>
     </>

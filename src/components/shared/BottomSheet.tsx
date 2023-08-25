@@ -36,7 +36,7 @@ export default function BottomSheet({
     [],
   );
 
-  const snapPoints = useMemo(() => ['25%', '50%', '75%'], []);
+  const snapPoints = useMemo(() => ['35%', '65%', '100%'], []);
 
   const renderBackdrop = useCallback(
     (props: ComponentProps<typeof BottomSheetBackdrop>) => (

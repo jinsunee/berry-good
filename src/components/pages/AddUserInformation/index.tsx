@@ -1,7 +1,11 @@
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {View} from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+import Toast from 'react-native-toast-message';
 import styled from 'styled-components/native';
 import {RootStackNavigationType} from '../../navigators/RootStackNavigator';
 import {DismissKeyboard} from '../../shared/DismissKeyboard';
@@ -32,13 +36,56 @@ type Inputs = {
 
 export default function AddUserInformation() {
   const {navigate} = useNavigation<RootStackNavigationType>();
-  const {control} = useForm<Inputs>({
+  const {control, handleSubmit} = useForm<Inputs>({
     defaultValues: {
       userName: '',
       age: undefined,
       gender: undefined,
     },
   });
+
+  const onSubmit = async ({userName, age, gender}: Inputs) => {
+    if (!userName || !age || !gender) {
+      Toast.show({
+        type: 'plain',
+        text2: '모든 항목을 입력해주세요 :)',
+        position: 'top',
+        visibilityTime: 2000,
+      });
+      return;
+    }
+
+    try {
+      // 익명 로그인
+      const userCredential = await auth().signInAnonymously();
+      const user = userCredential.user;
+
+      // 디바이스 정보 가져오기
+      const deviceId = DeviceInfo.getUniqueId();
+      const deviceName = DeviceInfo.getDeviceName();
+      const deviceModel = DeviceInfo.getModel();
+      // ... 여기에 더 많은 디바이스 정보를 추가할 수 있습니다.
+
+      // Firestore에 데이터 저장
+      const userDoc = {
+        userName,
+        gender,
+        age,
+        deviceId,
+        deviceInfo: {
+          deviceName,
+          deviceModel,
+          // ... 여기에 더 많은 디바이스 정보를 추가할 수 있습니다.
+        },
+      };
+
+      await firestore().collection('users').doc(user.uid).set(userDoc);
+
+      console.log('User data saved:', userDoc);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
     <StyledSafeAreaView>
@@ -118,7 +165,7 @@ export default function AddUserInformation() {
               에 동의한 것으로 간주됩니다.
             </InfoText>
             <Spacing size={15} />
-            <SubmitButton>
+            <SubmitButton onPress={handleSubmit(onSubmit)}>
               <SubmitText>저장</SubmitText>
             </SubmitButton>
           </Bottom>
