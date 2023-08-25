@@ -1,12 +1,15 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import React, {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {View} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import Spinner from 'react-native-spinkit';
 import Toast from 'react-native-toast-message';
 import styled from 'styled-components/native';
+import {collections} from '../../../utils/collections';
+import colors from '../../../utils/colors';
 import {RootStackNavigationType} from '../../navigators/RootStackNavigator';
 import {DismissKeyboard} from '../../shared/DismissKeyboard';
 import {SelectPicker} from '../../shared/SelectPicker';
@@ -44,6 +47,8 @@ export default function AddUserInformation() {
     },
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const onSubmit = async ({userName, age, gender}: Inputs) => {
     if (!userName || !age || !gender) {
       Toast.show({
@@ -55,6 +60,8 @@ export default function AddUserInformation() {
       return;
     }
 
+    setIsLoading(true);
+
     try {
       // 익명 로그인
       const userCredential = await auth().signInAnonymously();
@@ -64,27 +71,34 @@ export default function AddUserInformation() {
       const deviceId = DeviceInfo.getUniqueId();
       const deviceName = DeviceInfo.getDeviceName();
       const deviceModel = DeviceInfo.getModel();
-      // ... 여기에 더 많은 디바이스 정보를 추가할 수 있습니다.
 
-      // Firestore에 데이터 저장
       const userDoc = {
         userName,
         gender,
         age,
         deviceId,
         deviceInfo: {
-          deviceName,
-          deviceModel,
-          // ... 여기에 더 많은 디바이스 정보를 추가할 수 있습니다.
+          id: deviceId,
+          name: deviceName,
+          model: deviceModel,
         },
       };
 
-      await firestore().collection('users').doc(user.uid).set(userDoc);
-
-      console.log('User data saved:', userDoc);
+      await firestore()
+        .collection(collections.USERS)
+        .doc(user.uid)
+        .set(userDoc);
     } catch (error) {
       console.error('Error:', error);
+      Toast.show({
+        type: 'plain',
+        text2: '오류가 발생했습니다. :<',
+        position: 'top',
+        visibilityTime: 4000,
+      });
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -165,8 +179,11 @@ export default function AddUserInformation() {
               에 동의한 것으로 간주됩니다.
             </InfoText>
             <Spacing size={15} />
-            <SubmitButton onPress={handleSubmit(onSubmit)}>
-              <SubmitText>저장</SubmitText>
+            <SubmitButton onPress={handleSubmit(onSubmit)} disabled={isLoading}>
+              {isLoading && (
+                <Spinner type="ThreeBounce" size={16} color={colors.white} />
+              )}
+              {!isLoading && <SubmitText>저장</SubmitText>}
             </SubmitButton>
           </Bottom>
         </Wrapper>

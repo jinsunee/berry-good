@@ -1,5 +1,6 @@
 import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import {
   createNativeStackNavigator,
@@ -29,7 +30,7 @@ export type RootStackNavigationType = NativeStackNavigationProp<
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootStackNavigator() {
-  const [_, setCurrentUser] = useRecoilState(userAtom);
+  const [currentUser, setCurrentUser] = useRecoilState(userAtom);
 
   useEffect(() => {
     if (firebase.apps.length === 0) {
@@ -37,17 +38,15 @@ export default function RootStackNavigator() {
     }
     const unsubscribe = auth().onAuthStateChanged(async user => {
       if (user) {
-        // Fetch user information from the API
-        // const response = await fetch('http://localhost:3000/api/users', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({userId: user.uid}),
-        // });
-        // const data = await response.json();
-        // // Now, you can set this data to the recoil state or handle it as required.
-        // setCurrentUser(data);
+        const uid = user.uid;
+        const userDoc = await firestore().collection('users').doc(uid).get();
+        const userData = userDoc.data();
+        setCurrentUser({
+          id: uid,
+          userName: userData?.userName,
+          age: userData?.age,
+          gender: userData?.gender,
+        });
       } else {
         // User is signed out.
         setCurrentUser(null);
@@ -61,16 +60,20 @@ export default function RootStackNavigator() {
 
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="FirstStack"
-        component={FirstStack}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="HomeStack"
-        component={HomeStack}
-        options={{headerShown: false}}
-      />
+      {currentUser == null && (
+        <Stack.Screen
+          name="FirstStack"
+          component={FirstStack}
+          options={{headerShown: false}}
+        />
+      )}
+      {currentUser != null && (
+        <Stack.Screen
+          name="HomeStack"
+          component={HomeStack}
+          options={{headerShown: false}}
+        />
+      )}
       <Stack.Screen
         name="WebView"
         component={WebViewScreen}

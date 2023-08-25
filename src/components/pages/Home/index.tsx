@@ -1,10 +1,14 @@
+import auth from '@react-native-firebase/auth';
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Pressable, SafeAreaView, Text} from 'react-native';
 
 export default function Home() {
   return (
-    <View>
+    <SafeAreaView>
       <Text>Home</Text>
-    </View>
+      <Pressable onPress={() => auth().signOut()}>
+        <Text>SignOut</Text>
+      </Pressable>
+    </SafeAreaView>
   );
 }

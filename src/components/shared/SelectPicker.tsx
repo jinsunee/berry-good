@@ -37,7 +37,7 @@ export function SelectPicker<T>({
 
   const pickerItems = useMemo(() => {
     return items.map(item => (
-      <Picker.Item key={item.label} label={item.label} value={item} />
+      <Picker.Item key={item.label} label={item.label} value={item.value} />
     ));
   }, [items]);
 
@@ -70,9 +70,10 @@ export function SelectPicker<T>({
           </Header>
         }>
         <Picker
-          selectedValue={selectedItem}
+          selectedValue={selectedItem?.value} // MEMO: 여기는 객체 state를 넣으면 매번 참조 값이 바뀌고, Picker.Item과 맵핑되는 value 값이 없는 것 처럼 보이게 된다. 그래서 value에 객체 데이터 타입이 아닌 원시 데이터 타입(number, string, ...)을 넣어야한다.
           onValueChange={itemValue => {
-            setSelectedItem(itemValue);
+            const _item = items.find(item => item.value === itemValue);
+            setSelectedItem(_item);
           }}>
           {pickerItems}
         </Picker>
