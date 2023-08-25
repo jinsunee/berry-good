@@ -1,6 +1,6 @@
 import {
-  createNativeStackNavigator,
   NativeStackNavigationProp,
+  createNativeStackNavigator,
 } from '@react-navigation/native-stack';
 import React from 'react';
 import EditGoal from '../pages/EditGoal';
@@ -19,7 +19,7 @@ export type HomeStackParamList = {
   UserInformation: undefined;
 };
 
-export type MainStackNavigationType = NativeStackNavigationProp<
+export type HomeStackNavigationType = NativeStackNavigationProp<
   HomeStackParamList,
   'Home'
 >;
@@ -52,7 +52,7 @@ export default function HomeStackNavigator() {
       <Stack.Screen
         name="Setting"
         component={Setting}
-        options={{headerShown: false}}
+        // options={{headerShown: false}}
       />
       <Stack.Screen
         name="UserInformation"

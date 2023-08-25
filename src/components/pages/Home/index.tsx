@@ -1,14 +1,11 @@
-import auth from '@react-native-firebase/auth';
 import React from 'react';
-import {Pressable, SafeAreaView, Text} from 'react-native';
+import {SafeAreaView} from 'react-native';
+import Header from './Header';
 
 export default function Home() {
   return (
     <SafeAreaView>
-      <Text>Home</Text>
-      <Pressable onPress={() => auth().signOut()}>
-        <Text>SignOut</Text>
-      </Pressable>
+      <Header />
     </SafeAreaView>
   );
 }
