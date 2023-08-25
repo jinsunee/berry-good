@@ -1,38 +1,44 @@
-import {Picker} from '@react-native-picker/picker';
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {View} from 'react-native';
 import styled from 'styled-components/native';
-import useBoolean from '../../../hooks/useBoolean';
 import {RootStackNavigationType} from '../../navigators/RootStackNavigator';
-import BottomSheet from '../../shared/BottomSheet';
 import {DismissKeyboard} from '../../shared/DismissKeyboard';
+import {SelectPicker} from '../../shared/SelectPicker';
 import {Spacing} from '../../shared/Spacing';
 import {Stack} from '../../shared/Stack';
 import {TextField} from '../../shared/TextField';
 
+const ageItems = [
+  {label: '-', value: -1},
+  ...Array.from({length: 80}).map((_, index) => {
+    const item = index + 10;
+    return {label: String(item), value: item};
+  }),
+];
+
+const genderItems = [
+  {label: '남자', value: 'Male'},
+  {label: '여자', value: 'Female'},
+  {label: '기타', value: 'Other'},
+];
+
 type Inputs = {
   userName?: string;
-  age: number;
-  gender: 'Male' | 'Female' | 'Other';
+  age?: number;
+  gender?: 'Male' | 'Female' | 'Other';
 };
 
 export default function AddUserInformation() {
   const {navigate} = useNavigation<RootStackNavigationType>();
-  const [isOpenAge, toggleAge] = useBoolean();
-  const [isOpenGender, toggleGender] = useBoolean();
-
-  const [selectedLanguage, setSelectedLanguage] = useState();
-
-  const {
-    control,
-    formState: {errors},
-  } = useForm<Inputs>();
-
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
-  const [gender, setGender] = useState('');
+  const {control} = useForm<Inputs>({
+    defaultValues: {
+      userName: '',
+      age: undefined,
+      gender: undefined,
+    },
+  });
 
   return (
     <StyledSafeAreaView>
@@ -60,28 +66,22 @@ export default function AddUserInformation() {
                 name="age"
                 control={control}
                 render={({field: {onChange, value}}) => (
-                  <>
-                    <InputWrapper onPress={() => toggleAge()}>
-                      <InputText haveValue={!!value}>나이</InputText>
-                    </InputWrapper>
-                    <BottomSheet isOpen={isOpenAge} onClose={toggleAge}>
-                      <Picker
-                        selectedValue={selectedLanguage}
-                        onValueChange={itemValue => onChange(itemValue)}>
-                        <Picker.Item label="Java" value="java" />
-                        <Picker.Item label="JavaScript" value="js" />
-                      </Picker>
-                    </BottomSheet>
-                  </>
+                  <SelectPicker
+                    value={value}
+                    onConfirm={item => onChange(item!.value)}
+                    items={ageItems}
+                    placeholder="나이"
+                  />
                 )}
               />
               <Controller
                 name="gender"
                 control={control}
                 render={({field: {onChange, value}}) => (
-                  <TextField
+                  <SelectPicker
                     value={value}
-                    onChangeText={onChange}
+                    onConfirm={item => onChange(item!.value)}
+                    items={genderItems}
                     placeholder="성별"
                   />
                 )}
@@ -173,17 +173,4 @@ const StyledLink = styled.Text`
   text-decoration: underline;
   text-decoration-line: underline;
   text-decoration-color: ${({theme}) => theme.secondary[1]};
-`;
-
-const InputWrapper = styled.Pressable`
-  border-radius: 30px;
-  border: 1px solid ${({theme}) => theme.secondary[1]};
-  padding: 15px 20px;
-`;
-
-const InputText = styled.Text<{haveValue: boolean}>`
-  font-size: 16px;
-  font-weight: bold;
-  color: ${({theme, haveValue}) =>
-    haveValue ? theme.text : theme.secondary[1]};
 `;

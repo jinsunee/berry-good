@@ -15,6 +15,7 @@ interface Props {
   children: ReactNode;
   onClose: () => void;
   index?: number;
+  headerElement?: ReactNode;
 }
 
 export default function BottomSheet({
@@ -22,6 +23,7 @@ export default function BottomSheet({
   children,
   onClose,
   index = 2,
+  headerElement,
 }: Props) {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -66,6 +68,7 @@ export default function BottomSheet({
       backdropComponent={renderBackdrop}
       onDismiss={handleCloseModal}
       handleComponent={null}>
+      {headerElement}
       <View>{children}</View>
     </BottomSheetModal>
   );
