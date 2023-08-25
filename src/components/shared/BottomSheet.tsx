@@ -1,8 +1,4 @@
-import {
-  BottomSheetBackdrop,
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from '@gorhom/bottom-sheet';
+import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
 import React, {
   ComponentProps,
   ReactNode,
@@ -63,16 +59,14 @@ export default function BottomSheet({
   }, [handleOpenModal, handleCloseModal, isOpen]);
 
   return (
-    <BottomSheetModalProvider>
-      <BottomSheetModal
-        ref={bottomSheetModalRef}
-        snapPoints={snapPoints}
-        index={index}
-        backdropComponent={renderBackdrop}
-        onDismiss={handleCloseModal}
-        handleComponent={null}>
-        <View>{children}</View>
-      </BottomSheetModal>
-    </BottomSheetModalProvider>
+    <BottomSheetModal
+      ref={bottomSheetModalRef}
+      snapPoints={snapPoints}
+      index={index}
+      backdropComponent={renderBackdrop}
+      onDismiss={handleCloseModal}
+      handleComponent={null}>
+      <View>{children}</View>
+    </BottomSheetModal>
   );
 }

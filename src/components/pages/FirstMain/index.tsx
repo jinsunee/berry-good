@@ -1,8 +1,11 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import styled from 'styled-components/native';
+import {FirstStackNavigationType} from '../../navigators/FirstStackNavigator';
 import {Spacing} from '../../shared/Spacing';
 
 export default function FirstMain() {
+  const {navigate} = useNavigation<FirstStackNavigationType>();
   return (
     <StyledSafeAreaView>
       <StyledImage
@@ -23,7 +26,7 @@ export default function FirstMain() {
         <Spacing size={100} />
       </Wrapper>
       <Center>
-        <StartButton>
+        <StartButton onPress={() => navigate('AddUserInformation')}>
           <StartText>시작하기</StartText>
         </StartButton>
       </Center>
@@ -68,14 +71,14 @@ const Center = styled.View`
   left: 30%;
 `;
 
-const StartButton = styled.Pressable`
+const StartButton = styled.TouchableOpacity`
   background-color: ${({theme}) => theme.text};
   border-radius: 30px;
+  padding: 15px 40px;
 `;
 
 const StartText = styled.Text`
   font-weight: bold;
   color: ${({theme}) => theme.background};
   font-size: 16px;
-  padding: 15px 40px;
 `;
