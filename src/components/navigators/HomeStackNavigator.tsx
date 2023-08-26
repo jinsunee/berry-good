@@ -13,7 +13,7 @@ import UserInformation from '../pages/UserInformation';
 export type HomeStackParamList = {
   Home: undefined;
   OnboardingChat: undefined;
-  Goal: undefined;
+  Goal: {id: string};
   EditGoal: {id?: string};
   Setting: undefined;
   UserInformation: undefined;
