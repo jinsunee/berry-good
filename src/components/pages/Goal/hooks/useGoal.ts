@@ -9,8 +9,6 @@ export function useGoal() {
   const user = useRecoilValue(userAtom);
   const goalId = useGoalId();
 
-  console.log('goalId', goalId);
-
   const {data, ...rest} = useQuery([goalQueryKey, user, goalId], async () => {
     // const goalsSnapshot = await firestore()
     //   .collection('goals')
