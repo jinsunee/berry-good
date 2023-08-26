@@ -1,10 +1,16 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import styled from 'styled-components/native';
+import Header from './Header';
 
 export default function Goal() {
   return (
-    <View>
-      <Text>Goal</Text>
-    </View>
+    <StyledSafeAreaView>
+      <Header />
+    </StyledSafeAreaView>
   );
 }
+
+const StyledSafeAreaView = styled.SafeAreaView`
+  background-color: ${({theme}) => theme.background};
+  flex: 1;
+`;
